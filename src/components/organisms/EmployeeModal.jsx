@@ -8,11 +8,13 @@ import { employeeService } from "@/services/api/employeeService";
 import { departmentService } from "@/services/api/departmentService";
 
 const EmployeeModal = ({ isOpen, onClose, employee, onSuccess }) => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+const [formData, setFormData] = useState({
+    fullName: "",
+    dateOfBirth: "",
     email: "",
     phone: "",
+    parentEmail: "",
+    parentPhone: "",
     role: "",
     departmentId: "",
     hireDate: "",
@@ -22,13 +24,15 @@ const EmployeeModal = ({ isOpen, onClose, employee, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+useEffect(() => {
     if (employee) {
       setFormData({
-        firstName: employee.firstName,
-        lastName: employee.lastName,
+        fullName: employee.fullName || `${employee.firstName || ""} ${employee.lastName || ""}`.trim(),
+        dateOfBirth: employee.dateOfBirth || "",
         email: employee.email,
         phone: employee.phone,
+        parentEmail: employee.parentEmail || "",
+        parentPhone: employee.parentPhone || "",
         role: employee.role,
         departmentId: employee.departmentId,
         hireDate: employee.hireDate,
@@ -67,19 +71,25 @@ const EmployeeModal = ({ isOpen, onClose, employee, onSuccess }) => {
     }
   };
 
-  const validateForm = () => {
+const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.fullName.trim()) newErrors.fullName = "Full name is required";
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = "Date of birth is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone is required";
+    if (!formData.parentEmail.trim()) newErrors.parentEmail = "Parent email is required";
+    if (!formData.parentPhone.trim()) newErrors.parentPhone = "Parent phone is required";
     if (!formData.role.trim()) newErrors.role = "Role is required";
     if (!formData.departmentId) newErrors.departmentId = "Department is required";
     if (!formData.hireDate) newErrors.hireDate = "Hire date is required";
     
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
+    }
+    
+    if (formData.parentEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.parentEmail)) {
+      newErrors.parentEmail = "Please enter a valid parent email address";
     }
 
     setErrors(newErrors);
@@ -110,11 +120,13 @@ const EmployeeModal = ({ isOpen, onClose, employee, onSuccess }) => {
   };
 
   const handleClose = () => {
-    setFormData({
-      firstName: "",
-      lastName: "",
+setFormData({
+      fullName: "",
+      dateOfBirth: "",
       email: "",
       phone: "",
+      parentEmail: "",
+      parentPhone: "",
       role: "",
       departmentId: "",
       hireDate: "",
@@ -146,23 +158,23 @@ const EmployeeModal = ({ isOpen, onClose, employee, onSuccess }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
-              label="First Name"
-              name="firstName"
-              value={formData.firstName}
+              label="Full Name"
+              name="fullName"
+              value={formData.fullName}
               onChange={handleChange}
-              error={errors.firstName}
-              placeholder="Enter first name"
+              error={errors.fullName}
+              placeholder="Enter full name"
             />
 
             <FormField
-              label="Last Name"
-              name="lastName"
-              value={formData.lastName}
+              label="Date of Birth"
+              name="dateOfBirth"
+              type="date"
+              value={formData.dateOfBirth}
               onChange={handleChange}
-              error={errors.lastName}
-              placeholder="Enter last name"
+              error={errors.dateOfBirth}
             />
 
             <FormField
@@ -184,6 +196,24 @@ const EmployeeModal = ({ isOpen, onClose, employee, onSuccess }) => {
               placeholder="Enter phone number"
             />
 
+            <FormField
+              label="Parent Email"
+              name="parentEmail"
+              type="email"
+              value={formData.parentEmail}
+              onChange={handleChange}
+              error={errors.parentEmail}
+              placeholder="Enter parent email address"
+            />
+
+            <FormField
+              label="Parent Phone"
+              name="parentPhone"
+              value={formData.parentPhone}
+              onChange={handleChange}
+              error={errors.parentPhone}
+              placeholder="Enter parent phone number"
+            />
             <FormField
               label="Role"
               name="role"
