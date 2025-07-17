@@ -10,11 +10,8 @@ import { departmentService } from "@/services/api/departmentService";
 const EmployeeModal = ({ isOpen, onClose, employee, onSuccess }) => {
 const [formData, setFormData] = useState({
     fullName: "",
-    dateOfBirth: "",
     email: "",
     phone: "",
-    parentEmail: "",
-    parentPhone: "",
     role: "",
     departmentId: "",
     hireDate: "",
@@ -24,19 +21,16 @@ const [formData, setFormData] = useState({
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-useEffect(() => {
+  useEffect(() => {
     if (employee) {
       setFormData({
-        fullName: employee.fullName || `${employee.firstName || ""} ${employee.lastName || ""}`.trim(),
-        dateOfBirth: employee.dateOfBirth || "",
-        email: employee.email,
-        phone: employee.phone,
-        parentEmail: employee.parentEmail || "",
-        parentPhone: employee.parentPhone || "",
-        role: employee.role,
-        departmentId: employee.departmentId,
-        hireDate: employee.hireDate,
-        status: employee.status
+        fullName: employee.Name || `${employee.first_name_c || ""} ${employee.last_name_c || ""}`.trim(),
+        email: employee.email_c || "",
+        phone: employee.phone_c || "",
+        role: employee.role_c || "",
+        departmentId: employee.department_id_c || "",
+        hireDate: employee.hire_date_c || "",
+        status: employee.status_c || "active"
       });
     }
   }, [employee]);
@@ -75,21 +69,14 @@ const validateForm = () => {
     const newErrors = {};
     
     if (!formData.fullName.trim()) newErrors.fullName = "Full name is required";
-    if (!formData.dateOfBirth) newErrors.dateOfBirth = "Date of birth is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone is required";
-    if (!formData.parentEmail.trim()) newErrors.parentEmail = "Parent email is required";
-    if (!formData.parentPhone.trim()) newErrors.parentPhone = "Parent phone is required";
     if (!formData.role.trim()) newErrors.role = "Role is required";
     if (!formData.departmentId) newErrors.departmentId = "Department is required";
     if (!formData.hireDate) newErrors.hireDate = "Hire date is required";
     
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
-    }
-    
-    if (formData.parentEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.parentEmail)) {
-      newErrors.parentEmail = "Please enter a valid parent email address";
     }
 
     setErrors(newErrors);
@@ -122,11 +109,8 @@ const validateForm = () => {
   const handleClose = () => {
 setFormData({
       fullName: "",
-      dateOfBirth: "",
       email: "",
       phone: "",
-      parentEmail: "",
-      parentPhone: "",
       role: "",
       departmentId: "",
       hireDate: "",
@@ -169,15 +153,6 @@ setFormData({
             />
 
             <FormField
-              label="Date of Birth"
-              name="dateOfBirth"
-              type="date"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              error={errors.dateOfBirth}
-            />
-
-            <FormField
               label="Email"
               name="email"
               type="email"
@@ -197,24 +172,6 @@ setFormData({
             />
 
             <FormField
-              label="Parent Email"
-              name="parentEmail"
-              type="email"
-              value={formData.parentEmail}
-              onChange={handleChange}
-              error={errors.parentEmail}
-              placeholder="Enter parent email address"
-            />
-
-            <FormField
-              label="Parent Phone"
-              name="parentPhone"
-              value={formData.parentPhone}
-              onChange={handleChange}
-              error={errors.parentPhone}
-              placeholder="Enter parent phone number"
-            />
-            <FormField
               label="Role"
               name="role"
               value={formData.role}
@@ -233,7 +190,7 @@ setFormData({
             >
               <option value="">Select Department</option>
               {departments.map(dept => (
-                <option key={dept.Id} value={dept.Id}>{dept.name}</option>
+                <option key={dept.Id} value={dept.Id}>{dept.Name || dept.name}</option>
               ))}
             </FormField>
 
@@ -256,7 +213,6 @@ setFormData({
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
-              <option value="terminated">Terminated</option>
             </FormField>
           </div>
 

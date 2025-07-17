@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useSelector } from 'react-redux';
 import Button from "@/components/atoms/Button";
 import SearchBar from "@/components/molecules/SearchBar";
 import ApperIcon from "@/components/ApperIcon";
+import { AuthContext } from "../../App";
 
 const Header = ({ title, onMenuClick, onSearch, showSearch = false }) => {
   const [showProfile, setShowProfile] = useState(false);
+  const { logout } = useContext(AuthContext);
+  const { user } = useSelector((state) => state.user);
+
+  const handleLogout = async () => {
+    setShowProfile(false);
+    await logout();
+  };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
@@ -47,7 +56,9 @@ const Header = ({ title, onMenuClick, onSearch, showSearch = false }) => {
                   <div className="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
                     <ApperIcon name="User" size={16} className="text-white" />
                   </div>
-                  <span className="hidden sm:block text-sm font-medium">Admin</span>
+                  <span className="hidden sm:block text-sm font-medium">
+                    {user?.firstName || 'Admin'}
+                  </span>
                 </Button>
                 
                 {showProfile && (
@@ -55,7 +66,12 @@ const Header = ({ title, onMenuClick, onSearch, showSearch = false }) => {
                     <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                     <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
                     <div className="border-t border-gray-200 my-1"></div>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                    <button 
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Sign out
+                    </button>
                   </div>
                 )}
               </div>

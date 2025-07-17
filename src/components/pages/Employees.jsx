@@ -52,17 +52,17 @@ const Employees = () => {
     }
   };
 
-  const handleSearch = (searchTerm) => {
+const handleSearch = (searchTerm) => {
     if (!searchTerm) {
       setFilteredEmployees(employees);
       return;
     }
 
     const filtered = employees.filter(employee =>
-      employee.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      employee.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      employee.role.toLowerCase().includes(searchTerm.toLowerCase())
+      (employee.first_name_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (employee.last_name_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (employee.email_c || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (employee.role_c || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
     
     setFilteredEmployees(filtered);
